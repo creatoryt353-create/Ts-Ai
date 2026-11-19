@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#090812"><title>TS AI</title>
+<style>
+:root{--bg:#090812;--panel:#141222;--panel2:#1b1730;--purple:#8b5cf6;--purple2:#a78bfa;--text:#f7f4ff;--muted:#aaa3bd;--line:#302747;--green:#4ade80}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% -10%,#2b1552 0,transparent 36%),var(--bg);color:var(--text);font-family:Inter,system-ui,Arial,sans-serif}
+header{padding:22px 18px 12px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#090812ee;backdrop-filter:blur(14px);z-index:2;border-bottom:1px solid #211a32}
+.brand{font-size:25px;font-weight:900;letter-spacing:.5px}.brand span{color:var(--purple2)}.tag{font-size:11px;color:var(--muted);margin-top:2px}
+main{padding:18px;max-width:760px;margin:auto}.hero{padding:20px 18px;border:1px solid #4b2b78;border-radius:20px;background:linear-gradient(135deg,#21133c,#131020 70%);margin:8px 0 18px}.hero h1{font-size:23px;margin:0 0 8px}.hero p{color:#c7bddb;font-size:13px;line-height:1.5;margin:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;margin:14px 0}.label{font-size:13px;font-weight:750;margin-bottom:10px;display:block}
+.tabs{display:flex;gap:8px}.tab,.chip,button,select{font:inherit}.tab{flex:1;padding:11px;border:1px solid var(--line);border-radius:12px;background:#100d1b;color:var(--muted);font-weight:700}.tab.active{background:#39215f;color:white;border-color:#8656d9}
+textarea{width:100%;min-height:145px;resize:vertical;background:#0e0b17;border:1px solid #3a2d50;border-radius:13px;color:white;padding:14px;font:14px/1.55 inherit;outline:none}textarea:focus{border-color:var(--purple)}
+select{width:100%;padding:13px;background:#100d1b;border:1px solid var(--line);border-radius:12px;color:white}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btn{border:0;border-radius:13px;padding:14px 16px;background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:white;font-weight:800;width:100%;margin-top:12px}.btn.secondary{background:#241b37;border:1px solid #483568}.btn:disabled{opacity:.5}
+.note{color:var(--muted);font-size:12px;line-height:1.5}.status{padding:12px;border-radius:12px;background:#21172c;color:#d8c9f3;font-size:12px;line-height:1.5;margin-top:12px}
+.section{border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0;background:#100d1a}.section h3{font-size:13px;color:var(--purple2);letter-spacing:.7px;margin:0 0 8px}.section p{white-space:pre-wrap;font-size:14px;line-height:1.6;margin:0}
+.actions{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}.small{border:1px solid #45345f;background:#201832;color:#eee6ff;border-radius:9px;padding:8px 10px;font-size:11px}
+.resulthead{display:flex;justify-content:space-between;align-items:center;gap:10px}.resulthead h2{font-size:18px;margin:0}.hidden{display:none!important}
+footer{text-align:center;color:#777087;font-size:11px;padding:24px}
+@media(max-width:390px){main{padding:12px}.row{grid-template-columns:1fr}.hero h1{font-size:20px}}
+</style></head><body>
+<header><div><div class="brand">TS <span>AI</span></div><div class="tag">CREATE SMARTER. GROW FASTER.</div></div><div style="font-size:11px;color:#bda5ff">CREATOR STUDIO</div></header>
+<main>
+<div class="hero"><h1>Your script. Five powerful steps.</h1><p>Turn a topic or your rough draft into a structured creator script: Hook, Problem, Solution, Result and CTA.</p></div>
+<div class="card">
+<span class="label">Choose input mode</span>
+<div class="tabs"><button class="tab active" id="topicTab" onclick="setMode('topic')">Enter Your Topic</button><button class="tab" id="scriptTab" onclick="setMode('script')">Paste Your Script</button></div>
+<div style="height:13px"></div>
+<textarea id="input" placeholder="Enter your topic or idea here..."></textarea>
+<div class="note" id="inputHint" style="margin-top:8px">Example: Why do people fail in life?</div>
+</div>
+<div class="card">
+<div class="row">
+<div><label class="label" for="duration">Video duration</label><select id="duration">
+<option value="30">30 Seconds</option><option value="60">1 Minute</option>
+<option value="120">2 Minutes</option><option value="180">3 Minutes</option>
+<option value="240">4 Minutes</option><option value="300">5 Minutes</option>
+<option value="360">6 Minutes</option><option value="420">7 Minutes</option>
+<option value="480">8 Minutes</option><option value="540">9 Minutes</option></select></div>
+<div><label class="label" for="language">Script language</label><select id="language"><option value="Hinglish">Hinglish</option><option value="Hindi">Hindi</option><option value="English">English</option></select></div>
+</div>
+<button class="btn" onclick="generate()">Generate Five-Step Script</button>
+<div class="status" id="status">AI connection is not configured yet. The app can be built and installed, but real AI generation needs a connected model service. No fake scripts will be shown.</div>
+</div>
+<div class="card hidden" id="resultCard">
+<div class="resulthead"><h2>Your five-step script</h2><span class="note" id="durationLabel"></span></div>
+<div id="sections"></div>
+<div class="section"><h3>COMPLETE COMBINED VOICEOVER</h3><p id="combined"></p></div>
+<div class="section"><h3>DELIVERY NOTES</h3><p id="notes"></p></div>
+<div class="actions"><button class="small" onclick="copyAll()">Copy complete script</button><button class="small" onclick="saveScript()">Save script</button><button class="small" onclick="downloadTxt()">Download TXT</button><button class="small" onclick="window.print()">Download / Save PDF</button><button class="small" onclick="AndroidBridge.shareText?.(allText())">Share</button></div>
+</div>
+<div class="card">
+<div class="resulthead"><h2>Saved scripts</h2><button class="small" onclick="showSaved()">Refresh</button></div>
+<div id="saved" class="note" style="margin-top:12px">No saved scripts yet.</div>
+</div>
+<div class="note" style="padding:4px 2px">TS AI uses a secure model connection when configured. Do not put private API keys inside the APK.</div>
+</main><footer>TS AI • Creator Studio</footer>
+<script>
+let mode='topic', output=null;
+const names=['HOOK','PROBLEM','SOLUTION','RESULT','CTA'];
+function setMode(m){mode=m;document.getElementById('topicTab').classList.toggle('active',m==='topic');document.getElementById('scriptTab').classList.toggle('active',m==='script');document.getElementById('input').placeholder=m==='topic'?'Enter your topic or idea here...':'Paste your existing script here...';document.getElementById('inputHint').textContent=m==='topic'?'Example: Why do people fail in life?':'Paste your original voiceover, paragraph, story or rough notes.'}
+function generate(){
+ const v=document.getElementById('input').value.trim();
+ if(!v){setStatus('Please enter a topic or paste your script first.');return}
+ setStatus('AI model is not connected. This build is ready for the interface and local library, but generation requires a real backend endpoint. Configure a secure backend before publishing.');
+}
+function setStatus(t){document.getElementById('status').textContent=t}
+function allText(){if(!output)return '';return names.map(n=>n+'\\n'+output[n]).join('\\n\\n')+'\\n\\nCOMPLETE VOICEOVER\\n'+names.map(n=>output[n]).join(' ')+'\\n\\n'+output.notes}
+function copyText(t){if(navigator.clipboard?.writeText){navigator.clipboard.writeText(t).then(()=>setStatus('Copied to clipboard.')).catch(()=>setStatus('Copy was blocked by this device.'));}else{setStatus('Clipboard is not available in this view.')}}
+function copyAll(){copyText(allText())}
+function saveScript(){if(!output){setStatus('No generated script to save.');return}let a=JSON.parse(localStorage.getItem('tsai_saved')||'[]');a.unshift({date:new Date().toLocaleString(),text:allText()});localStorage.setItem('tsai_saved',JSON.stringify(a.slice(0,100)));showSaved();setStatus('Saved on this device.')}
+function showSaved(){let a=JSON.parse(localStorage.getItem('tsai_saved')||'[]');document.getElementById('saved').innerHTML=a.length?a.map((x,i)=>`<div class="section"><p>${escapeHtml(x.date)}</p><div class="actions"><button class="small" onclick="copyText(savedText(${i}))">Copy</button><button class="small" onclick="deleteSaved(${i})">Delete</button></div></div>`).join(''):'No saved scripts yet.';window._saved=a}
+function savedText(i){return window._saved?.[i]?.text||''}
+function deleteSaved(i){let a=JSON.parse(localStorage.getItem('tsai_saved')||'[]');a.splice(i,1);localStorage.setItem('tsai_saved',JSON.stringify(a));showSaved()}
+function downloadTxt(){let blob=new Blob([allText()],{type:'text/plain'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='TS-AI-Script.txt';a.click();URL.revokeObjectURL(url)}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+showSaved();
+</script></body></html>
